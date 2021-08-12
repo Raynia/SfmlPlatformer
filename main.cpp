@@ -14,24 +14,34 @@ int main()
 
 	std::srand(static_cast<unsigned int>(std::time(NULL)));
 
-	sf::Uint32 window_width = 1280U; //set screen width
-	sf::Uint32 window_height = 720U; //set screen height
-	sf::String window_title(std::string("Pong")); //set title
 
-	sf::ContextSettings window_settings;
-	window_settings.depthBits = 24U;
-	window_settings.stencilBits = 8U;
-	window_settings.antialiasingLevel = 4U;
-	window_settings.majorVersion = 4U;
-	window_settings.minorVersion = 0U;
+	
+	sf::Uint32 windowWidth = 1280U; //set screen width
+	sf::Uint32 windowHeight = 720U; //set screen height
+	sf::String windowTitle(std::string("Pong")); //set title
 
-	const int32_t window_style = sf::Style::Close;
+	sf::ContextSettings windowContextAttr;
+	windowContextAttr.depthBits = 24U;
+	windowContextAttr.stencilBits = 8U;
+	windowContextAttr.antialiasingLevel = 4U;
+	windowContextAttr.majorVersion = 4U;
+	windowContextAttr.minorVersion = 0U;
 
-	sf::Font font;
-	if (!font.loadFromFile("c:/windows/fonts/arial.ttf"))
+	const int32_t windowStyle = sf::Style::Close;
+	
+	sf::Font fontEN;
+	if (!fontEN.loadFromFile("c:/windows/fonts/arial.ttf"))
 		return EXIT_FAILURE;
 
-	sf::Text text("Hello SFML!", font, 30U);
+	sf::Font fontEastAsian;
+	if (!fontEastAsian.loadFromFile("c:/windows/fonts/gulim.ttc"))
+		return EXIT_FAILURE;
+
+	sf::Text textEN(L"Hello", fontEN, 30U);
+	sf::Text textKR(L"¾È³ç", fontEastAsian, 30U);
+
+	textEN.setPosition(0, 0);
+	textKR.setPosition(500, 0);
 
 	///////////////////////////////////////////
 	//
@@ -41,7 +51,7 @@ int main()
 
 	sf::RenderWindow window;
 
-	window.create(sf::VideoMode(window_width, window_height), window_title, window_style, window_settings);
+	window.create(sf::VideoMode(windowWidth, windowHeight), windowTitle, windowStyle, windowContextAttr);
 
 	///////////////////////////////////////////
 	////
@@ -66,11 +76,13 @@ int main()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-
+			if (sf::Event::Closed)
+				window.close();
 		}
 
 		window.clear();
-
+		window.draw(textEN);
+		window.draw(textKR);
 		window.display();
 	}
 
