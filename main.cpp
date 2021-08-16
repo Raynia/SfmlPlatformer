@@ -13,8 +13,7 @@ int main()
 	// Define application window attritubes
 	//
 	///////////////////////////////////////////
-
-	std::srand(static_cast<unsigned int>(std::time(NULL)));
+	std::srand(static_cast<unsigned int>(std::time(NULL)));	
 
 	std::vector<sf::VideoMode> videoMode;
 	videoMode = sf::VideoMode::getFullscreenModes();
@@ -33,26 +32,18 @@ int main()
 	const int32_t windowFullScreen = sf::Style::Close | sf::Style::Fullscreen;
 	const int32_t windowWindowScreen = sf::Style::Close;
 	
-	sf::Font fontEN;
-	if (!fontEN.loadFromFile("c:/windows/fonts/arial.ttf"))
+	sf::Font fontEnglish;
+	sf::Font fontEastAsia;
+	if (!fontEnglish.loadFromFile("c:/windows/fonts/arial.ttf") ||
+		!fontEastAsia.loadFromFile("c:/windows/fonts/gulim.ttc"))
 		return EXIT_FAILURE;
 
-	sf::Font fontEastAsian;
-	if (!fontEastAsian.loadFromFile("c:/windows/fonts/gulim.ttc"))
-		return EXIT_FAILURE;
-
-	sf::Text textEN(L"Hello", fontEN, 30U);
-	sf::Text textKR(L"¾È³ç", fontEastAsian, 30U);
-
-	textEN.setPosition(0, 0);
-	textKR.setPosition(500, 0);
 
 	///////////////////////////////////////////
 	//
 	// Create the window of the application
 	//
 	///////////////////////////////////////////
-
 	sf::RenderWindow window;
 	window.create(sf::VideoMode(windowWidth, windowHeight), windowTitle, windowWindowScreen, windowContextAttr);
 
@@ -63,51 +54,67 @@ int main()
 	///////////////////////////////////////////
 	bool isFull = false;
 	bool isCreate = true;
+	bool sceneSwitch = true;
 
 	bool scene1 = true;
 	bool scene2 = false;
 
-	sf::Texture texture1;
-	sf::Texture texture2;
-
-	if (!texture1.loadFromFile("resource/background_test.jpg"))
-		return EXIT_FAILURE;	
-	if (!texture2.loadFromFile("resource/logo_1.jpg"))
-		return EXIT_FAILURE;
-
-	sf::Sprite sprite1;
-	sf::Sprite sprite2;
-	sprite1.setTexture(texture1);
-	sprite2.setTexture(texture2);
-
-	sf::SoundBuffer soundbuffer1;
-	sf::SoundBuffer soundbuffer2;
-
-	if (!soundbuffer1.loadFromFile("resource/title.ogg"))
-		return EXIT_FAILURE;
-	if (!soundbuffer2.loadFromFile("resource/test.ogg"))
-		return EXIT_FAILURE;
-
-	sf::Sound sound1;
-	sf::Sound sound2;
-	sound1.setBuffer(soundbuffer1);
-	sound1.setVolume(50.f);
-
-	sound2.setBuffer(soundbuffer2);
-	sound2.setVolume(50.f);
+	bool titleOptionSwitch = false;
+	
 	///////////////////////////////////////////
 	////
 	//// Game objects setting
 	////
 	///////////////////////////////////////////		
+	sf::Texture texture1;
+	sf::Texture texture2;
+
+	if (!texture1.loadFromFile("resource/background_test.jpg") ||
+		!texture2.loadFromFile("resource/logo_1.jpg"))
+		return EXIT_FAILURE;
+
+	texture1.setSmooth(true);
+	texture2.setSmooth(true);
+
+	sf::Sprite sprite1;
+	sf::Sprite sprite2;
+
+	sprite1.setTexture(texture1);
+	sprite2.setTexture(texture2);
+
+	sf::SoundBuffer soundeffectClick;
+	sf::SoundBuffer soundeffectDecide;
+	sf::Music backgroundmusic;
+	sf::Sound soundeffect;
+
+	if (!soundeffectClick.loadFromFile("resource/click.wav") ||
+		!soundeffectDecide.loadFromFile("resource/decide.wav"))
+		return EXIT_FAILURE;
+
+	backgroundmusic.setVolume(50.f);
+	soundeffect.setVolume(50.f);
+
+	sf::Text testText;
+	testText.setFont(fontEnglish);
+	testText.setString(L"Insted of Options");
+
+	sf::Vector2u titleUISize(100u, 40u);
+	sf::Vector2u titleUIPosition(910u, 500u);
+	sf::Rect<unsigned int> rect(titleUIPosition, titleUISize);
+	
 
 	///////////////////////////////////////////
 	////
 	//// Define debug values
 	////
 	///////////////////////////////////////////
-	//sound1.play();
-	
+	int testCount = 0;
+
+	///////////////////////////////////////////
+	////
+	//// 
+	////
+	///////////////////////////////////////////
 	while (window.isOpen())
 	{
 		//Define all event 
@@ -151,17 +158,33 @@ int main()
 						scene1 = true;
 						scene2 = false;
 					}
-				}				
+					sceneSwitch = true;
+				}
+				break;
+
+			case sf::Event::MouseButtonPressed:
+				break;
+
+			default:
 				break;
 			}			
 		}
 
 		//
 
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			testCount++;
+			std::cout << "testCount: " << testCount << "\n";
+		}
+
 		if (isCreate)
 		{
 			sprite1.setScale(sf::Vector2f(window.getSize().x / sprite1.getLocalBounds().width,
 				window.getSize().y / sprite1.getLocalBounds().height));
+			sprite2.setScale(sf::Vector2f(window.getSize().x / sprite1.getLocalBounds().width,
+				window.getSize().y / sprite1.getLocalBounds().height));
+
 			isCreate = false;
 		}
 
@@ -170,17 +193,27 @@ int main()
 		if (scene1)
 		{			
 			window.draw(sprite1);
-			window.draw(textEN);
-			if (sound1.getStatus() == sf::SoundSource::Stopped)
-				sound1.play();
+			
+			if (sceneSwitch)
+			{
+				backgroundmusic.stop();
+				backgroundmusic.openFromFile("resource/title.ogg");
+				backgroundmusic.play();
+				sceneSwitch = false;
+			}
 		}
 
 		if (scene2)
 		{
 			window.draw(sprite2);
-			window.draw(textKR);
-			if (sound2.getStatus() == sf::SoundSource::Stopped)
-				sound2.play();
+
+			if (sceneSwitch)
+			{
+				backgroundmusic.stop();
+				backgroundmusic.openFromFile("resource/test.ogg");
+				backgroundmusic.play();
+				sceneSwitch = false;
+			}
 		}
 
 		window.display();
