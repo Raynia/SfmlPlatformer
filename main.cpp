@@ -15,8 +15,7 @@ int main()
 	///////////////////////////////////////////
 	std::srand(static_cast<unsigned int>(std::time(NULL)));	
 
-	std::vector<sf::VideoMode> videoMode;
-	videoMode = sf::VideoMode::getFullscreenModes();
+	std::vector<sf::VideoMode> videoMode = sf::VideoMode::getFullscreenModes();
 
 	sf::Uint32 windowWidth = 1280U; //set screen width
 	sf::Uint32 windowHeight = 720U; //set screen height
@@ -25,7 +24,7 @@ int main()
 	sf::ContextSettings windowContextAttr;
 	windowContextAttr.depthBits = 32U;
 	windowContextAttr.stencilBits = 8U;
-	windowContextAttr.antialiasingLevel = 4U;
+	windowContextAttr.antialiasingLevel = 8U;
 	windowContextAttr.majorVersion = 4U;
 	windowContextAttr.minorVersion = 0U;
 
@@ -41,17 +40,18 @@ int main()
 
 	///////////////////////////////////////////
 	//
-	// Create the window of the application
+	// Initalize the window of the application
 	//
 	///////////////////////////////////////////
 	sf::RenderWindow window;
 	window.create(sf::VideoMode(windowWidth, windowHeight), windowTitle, windowWindowScreen, windowContextAttr);
 
 	///////////////////////////////////////////
-	////
-	//// Define variable or constant
-	////
+	//
+	// Game Switch
+	//
 	///////////////////////////////////////////
+
 	bool isFull = false;
 	bool isCreate = true;
 	bool sceneSwitch = true;
@@ -60,12 +60,18 @@ int main()
 	bool scene2 = false;
 
 	bool titleOptionSwitch = false;
-	
+	bool titleStartSwitch = false;
+	bool titleHideSwitch = false;
+
+
 	///////////////////////////////////////////
-	////
-	//// Game objects setting
-	////
-	///////////////////////////////////////////		
+	//
+	// Game objects setting
+	//
+	///////////////////////////////////////////
+
+	/* Grahpic objects */
+
 	sf::Texture texture1;
 	sf::Texture texture2;
 
@@ -82,6 +88,8 @@ int main()
 	sprite1.setTexture(texture1);
 	sprite2.setTexture(texture2);
 
+	/* Sound objects */
+
 	sf::SoundBuffer soundeffectClick;
 	sf::SoundBuffer soundeffectDecide;
 	sf::Music backgroundmusic;
@@ -94,22 +102,44 @@ int main()
 	backgroundmusic.setVolume(50.f);
 	soundeffect.setVolume(50.f);
 
-	sf::Text testText;
-	testText.setFont(fontEnglish);
-	testText.setString(L"Insted of Options");
-
 	sf::Vector2u titleUISize(100u, 40u);
 	sf::Vector2u titleUIPosition(910u, 500u);
 	sf::Rect<unsigned int> rect(titleUIPosition, titleUISize);
 	
-
 	///////////////////////////////////////////
-	////
-	//// Define debug values
-	////
+	//
+	// Define test variables or vunctions
+	//
 	///////////////////////////////////////////
 	int testCount = 0;
+	sf::Clock testClock;
 
+	sf::Text testTextOptions, testTextMenuButton;
+	testTextOptions.setFont(fontEnglish);
+	testTextOptions.setString(L"Insted of Options");
+
+	testTextMenuButton.setFont(fontEnglish);
+	testTextMenuButton.setString(L"Button");	
+	
+	sf::Texture testTextureStart, testTextureOptions, testTextureExtra, testTextureExit;
+	if (!testTextureStart.loadFromFile("resource/testStartImage.png") ||
+		!testTextureOptions.loadFromFile("resource/testOptionsImage.png") ||
+		!testTextureExtra.loadFromFile("resource/testExtraImage.png") ||
+		!testTextureExit.loadFromFile("resource/testExitImage.png"))
+		return EXIT_FAILURE;
+
+	sf::Sprite testSpriteStart, testSpriteOptions, testSpriteExtra, testSpriteExit;
+	testSpriteStart.setTexture(testTextureStart);
+	testSpriteOptions.setTexture(testTextureOptions);
+	testSpriteExtra.setTexture(testTextureExtra);
+	testSpriteExit.setTexture(testTextureExit);
+
+	float testMenuButtonBetweenDistance = 100.f;
+	float testMenuButtonPositionY = 0.f;	
+
+	sf::Rect<float> testRect;
+	testRect = sf::FloatRect();
+	
 	///////////////////////////////////////////
 	////
 	//// 
@@ -160,6 +190,14 @@ int main()
 					}
 					sceneSwitch = true;
 				}
+
+				if (event.key.code == sf::Keyboard::F)
+				{
+					if (titleOptionSwitch)
+						titleOptionSwitch = false;
+					else
+						titleOptionSwitch = true;
+				}
 				break;
 
 			case sf::Event::MouseButtonPressed:
@@ -176,6 +214,8 @@ int main()
 		{
 			testCount++;
 			std::cout << "testCount: " << testCount << "\n";
+			if (testCount > 5000)
+				testCount = 0;
 		}
 
 		if (isCreate)
@@ -184,16 +224,39 @@ int main()
 				window.getSize().y / sprite1.getLocalBounds().height));
 			sprite2.setScale(sf::Vector2f(window.getSize().x / sprite1.getLocalBounds().width,
 				window.getSize().y / sprite1.getLocalBounds().height));
+			/*testSpriteStart.setScale(sf::Vector2f(window.getSize().x / testSpriteStart.getGlobalBounds().width,
+				window.getSize().y / sprite1.getLocalBounds().height));*/
+			/*testSpriteOptions.setScale(sf::Vector2f(window.getSize().x / testSpriteOptions.getLocalBounds().width,
+				window.getSize().y / sprite1.getLocalBounds().height));*/
+			
+			testMenuButtonPositionY = (window.getSize().y / 4 * 3) - (testSpriteStart.getLocalBounds().height / 2);
+			testMenuButtonBetweenDistance = testSpriteStart.getLocalBounds().width / 2;
+
+			testSpriteStart.setPosition(
+				((window.getSize().x / 2) - testSpriteStart.getLocalBounds().width * 1.5) - testMenuButtonBetweenDistance,
+				testMenuButtonPositionY);
+
+			testSpriteOptions.setPosition(
+				testSpriteStart.getPosition().x + testSpriteStart.getLocalBounds().width + testMenuButtonBetweenDistance,
+				testMenuButtonPositionY);
+
+			testSpriteExit.setPosition(
+				testSpriteOptions.getPosition().x + testSpriteStart.getLocalBounds().width + testMenuButtonBetweenDistance,
+				testMenuButtonPositionY);
+
+			testRect = testSpriteStart.getLocalBounds();
 
 			isCreate = false;
 		}
-
+		
 		window.clear();
 		
 		if (scene1)
 		{			
 			window.draw(sprite1);
-			
+			window.draw(testSpriteStart);
+			window.draw(testSpriteOptions);
+			window.draw(testSpriteExit);
 			if (sceneSwitch)
 			{
 				backgroundmusic.stop();
@@ -201,6 +264,9 @@ int main()
 				backgroundmusic.play();
 				sceneSwitch = false;
 			}
+
+			if (titleOptionSwitch)
+				window.draw(testTextOptions);
 		}
 
 		if (scene2)
