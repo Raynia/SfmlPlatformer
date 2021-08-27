@@ -139,6 +139,10 @@ int main()
 
 	sf::Rect<float> testRect;
 	testRect = sf::FloatRect();
+
+	sf::View testView(sf::FloatRect(200.f, 200.f, 300.f, 200.f));
+	window.setView(testView);
+	
 	
 	///////////////////////////////////////////
 	////
@@ -216,6 +220,11 @@ int main()
 			std::cout << "testCount: " << testCount << "\n";
 			if (testCount > 5000)
 				testCount = 0;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
+		{
+			testView.move(sf::Vector2f(10.f, 0.f));
 		}
 
 		if (isCreate)
