@@ -10,7 +10,7 @@ int main()
 {
 	///////////////////////////////////////////
 	//
-	// Define application window attritubes
+	// 어플리케이션 윈도우 속성값
 	//
 	///////////////////////////////////////////
 	std::srand(static_cast<unsigned int>(std::time(NULL)));	
@@ -40,7 +40,7 @@ int main()
 
 	///////////////////////////////////////////
 	//
-	// Initalize the window of the application
+	// 어플리케이션 윈도우 최초 생성
 	//
 	///////////////////////////////////////////
 	sf::RenderWindow window;
@@ -48,29 +48,22 @@ int main()
 
 	///////////////////////////////////////////
 	//
-	// Game Switch
+	// 기능 사용을 위한 스위치
 	//
 	///////////////////////////////////////////
 
-	bool isFull = false;
-	bool isCreate = true;
-	bool sceneSwitch = true;
-
-	bool scene1 = true;
-	bool scene2 = false;
-
-	bool titleOptionSwitch = false;
-	bool titleStartSwitch = false;
-	bool titleHideSwitch = false;
+	bool isFullscreen = false; // 전체화면 여부를 확인
+	bool isWindowCreate = true; // 윈도우 (재)생성 여부를 확인
+	bool isSceneSwitch = true; // Scene 변경 여부를 확인
 
 
 	///////////////////////////////////////////
 	//
-	// Game objects setting
+	// 게임 내에서 사용되는 오브젝트 변수 및 함수
 	//
 	///////////////////////////////////////////
 
-	/* Grahpic objects */
+	/* 그래픽 오브젝트 (Texture -> Sprite - > Font) */
 
 	sf::Texture texture1;
 	sf::Texture texture2;
@@ -88,7 +81,11 @@ int main()
 	sprite1.setTexture(texture1);
 	sprite2.setTexture(texture2);
 
-	/* Sound objects */
+	/* 
+	사운드 오브젝트 
+	- 배경음 등 파일 크기가 큰 오브젝트는 필요한 Scene에서 sf::Music으로 로딩
+	- 파일 크기가 작은 오브젝트는 sf::SoundBuffer에 저장 후 sf::Sound에 로딩	
+	*/
 
 	sf::SoundBuffer soundeffectClick;
 	sf::SoundBuffer soundeffectDecide;
@@ -108,9 +105,28 @@ int main()
 	
 	///////////////////////////////////////////
 	//
-	// Define test variables or vunctions
-	//
+	// 세부 구현을 위한 변수 및 함수
+	// 
 	///////////////////////////////////////////
+
+	sf::Clock clock;
+
+	///////////////////////////////////////////
+	//
+	// 기능 테스트를 위한 변수 및 함수
+	//
+	// - 해당 변수가 사용된 모든 변수와 함수는 기능 테스트 목적을 위함
+	// - 
+	// 
+	///////////////////////////////////////////
+
+	bool testScene1 = true;
+	bool testScene2 = false;
+
+	bool testTitleOptionSwitch = false;
+	bool testTitleStartSwitch = false;
+	bool testTitleHideSwitch = false;
+
 	int testCount = 0;
 	sf::Clock testClock;
 
@@ -134,28 +150,22 @@ int main()
 	testSpriteExtra.setTexture(testTextureExtra);
 	testSpriteExit.setTexture(testTextureExit);
 
+	sf::Sprite testSpriteforView;
+	testSpriteforView.setTexture(texture2);
+
+
 	float testMenuButtonBetweenDistance = 100.f;
 	float testMenuButtonPositionY = 0.f;	
 
 	sf::Rect<float> testRect;
 	testRect = sf::FloatRect();
 
-	sf::View testView(sf::FloatRect(200.f, 200.f, 300.f, 200.f));
-	window.setView(testView);
-	
-	
-	///////////////////////////////////////////
-	////
-	//// 
-	////
-	///////////////////////////////////////////
+	//윈도우 루프 시작
+
 	while (window.isOpen())
 	{
-		//Define all event 
-
 		sf::Event event;
 
-		//Window depedence event
 		while (window.pollEvent(event))
 		{
 			switch(event.type)
@@ -164,43 +174,46 @@ int main()
 				window.close();
 				break;
 
-			//Window recreating test
 			case sf::Event::KeyPressed:
-				if (event.key.code == sf::Keyboard::S && !isFull)
+
+				//윈도우 재생성 기능 테스트
+				//전체화면과 윈도우화면 간의 전환 시 윈도우 자체를 재생성
+				//isFullscreen과 isWindowCreate를 true로 변경
+
+				if (event.key.code == sf::Keyboard::S && !isFullscreen)
 				{
 					window.create(sf::VideoMode::getDesktopMode(), windowTitle, windowFullScreen, windowContextAttr);
-					isFull = true;
-					isCreate = true;
-				}
-				
-				else if (event.key.code == sf::Keyboard::S && isFull)
+					isFullscreen = true;
+					isWindowCreate = true;
+				}				
+				else if (event.key.code == sf::Keyboard::S && isFullscreen)
 				{
 					window.create(sf::VideoMode(windowWidth, windowHeight), windowTitle, windowWindowScreen, windowContextAttr);
-					isFull = false;
-					isCreate = true;
+					isFullscreen = false;
+					isWindowCreate = true;
 				}
 
 				if (event.key.code == sf::Keyboard::D)
 				{
-					if (scene1 && !scene2)
+					if (testScene1 && !testScene2)
 					{
-						scene1 = false;
-						scene2 = true;
+						testScene1 = false;
+						testScene2 = true;
 					}
 					else/*if (!scene1 && scene2)*/
 					{
-						scene1 = true;
-						scene2 = false;
+						testScene1 = true;
+						testScene2 = false;
 					}
-					sceneSwitch = true;
+					isSceneSwitch = true;
 				}
 
 				if (event.key.code == sf::Keyboard::F)
 				{
-					if (titleOptionSwitch)
-						titleOptionSwitch = false;
+					if (testTitleOptionSwitch)
+						testTitleOptionSwitch = false;
 					else
-						titleOptionSwitch = true;
+						testTitleOptionSwitch = true;
 				}
 				break;
 
@@ -211,33 +224,30 @@ int main()
 				break;
 			}			
 		}
+		
+		// 윈도우 (재)생성 시 실행되는 기능
+		// isWindowCreate 스위치로 온오프
+		// 실행 시 윈도우 사이즈에 맞게 sprite와 view의 크기를 재조정
+		// 완료 후 isWindowCreate는 false로 변경됨
 
-		//
-
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			testCount++;
-			std::cout << "testCount: " << testCount << "\n";
-			if (testCount > 5000)
-				testCount = 0;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
-		{
-			testView.move(sf::Vector2f(10.f, 0.f));
-		}
-
-		if (isCreate)
+		if (isWindowCreate)
 		{
 			sprite1.setScale(sf::Vector2f(window.getSize().x / sprite1.getLocalBounds().width,
 				window.getSize().y / sprite1.getLocalBounds().height));
 			sprite2.setScale(sf::Vector2f(window.getSize().x / sprite1.getLocalBounds().width,
 				window.getSize().y / sprite1.getLocalBounds().height));
+			testSpriteforView.setScale(sf::Vector2f(window.getSize().x / sprite1.getLocalBounds().width,
+				window.getSize().y / sprite1.getLocalBounds().height));
+
+			std::cout << sprite2.getLocalBounds().width << "&" << sprite2.getLocalBounds().height << "\n";
+			std::cout << sprite2.getGlobalBounds().width << "&" << sprite2.getGlobalBounds().height << "\n";
+			testSpriteforView.setPosition(sf::Vector2f(sprite2.getGlobalBounds().width, 0));
+
 			/*testSpriteStart.setScale(sf::Vector2f(window.getSize().x / testSpriteStart.getGlobalBounds().width,
 				window.getSize().y / sprite1.getLocalBounds().height));*/
-			/*testSpriteOptions.setScale(sf::Vector2f(window.getSize().x / testSpriteOptions.getLocalBounds().width,
-				window.getSize().y / sprite1.getLocalBounds().height));*/
-			
+				/*testSpriteOptions.setScale(sf::Vector2f(window.getSize().x / testSpriteOptions.getLocalBounds().width,
+					window.getSize().y / sprite1.getLocalBounds().height));*/
+
 			testMenuButtonPositionY = (window.getSize().y / 4 * 3) - (testSpriteStart.getLocalBounds().height / 2);
 			testMenuButtonBetweenDistance = testSpriteStart.getLocalBounds().width / 2;
 
@@ -255,39 +265,49 @@ int main()
 
 			testRect = testSpriteStart.getLocalBounds();
 
-			isCreate = false;
+			sf::FloatRect visibleArea(window.getSize().x / 2, 0.f, window.getSize().x, window.getSize().y);
+			window.setView(sf::View(visibleArea));
+
+			isWindowCreate = false;
 		}
+
+		//
 		
+		float deltatime = clock.restart().asSeconds();
+
+		//오브젝트가 윈도우에 그려지는 구간
+
 		window.clear();
 		
-		if (scene1)
+		if (testScene1)
 		{			
 			window.draw(sprite1);
 			window.draw(testSpriteStart);
 			window.draw(testSpriteOptions);
 			window.draw(testSpriteExit);
-			if (sceneSwitch)
+			window.draw(testSpriteforView);
+			if (isSceneSwitch)
 			{
 				backgroundmusic.stop();
 				backgroundmusic.openFromFile("resource/title.ogg");
 				backgroundmusic.play();
-				sceneSwitch = false;
+				isSceneSwitch = false;
 			}
 
-			if (titleOptionSwitch)
+			if (testTitleOptionSwitch)
 				window.draw(testTextOptions);
 		}
 
-		if (scene2)
+		if (testScene2)
 		{
 			window.draw(sprite2);
 
-			if (sceneSwitch)
+			if (isSceneSwitch)
 			{
 				backgroundmusic.stop();
 				backgroundmusic.openFromFile("resource/test.ogg");
 				backgroundmusic.play();
-				sceneSwitch = false;
+				isSceneSwitch = false;
 			}
 		}
 
