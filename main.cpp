@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -10,7 +10,7 @@ int main()
 {
 	///////////////////////////////////////////
 	//
-	// ¾îÇÃ¸®ÄÉÀÌ¼Ç À©µµ¿ì ¼Ó¼º°ª
+	// ì–´í”Œë¦¬ì¼€ì´ì…˜ ìœˆë„ìš° ì†ì„±ê°’
 	//
 	///////////////////////////////////////////
 	std::srand(static_cast<unsigned int>(std::time(NULL)));	
@@ -37,10 +37,9 @@ int main()
 		!fontEastAsia.loadFromFile("c:/windows/fonts/gulim.ttc"))
 		return EXIT_FAILURE;
 
-
 	///////////////////////////////////////////
 	//
-	// ¾îÇÃ¸®ÄÉÀÌ¼Ç À©µµ¿ì ÃÖÃÊ »ı¼º
+	// ì–´í”Œë¦¬ì¼€ì´ì…˜ ìœˆë„ìš° ìµœì´ˆ ìƒì„±
 	//
 	///////////////////////////////////////////
 	sf::RenderWindow window;
@@ -48,22 +47,22 @@ int main()
 
 	///////////////////////////////////////////
 	//
-	// ±â´É »ç¿ëÀ» À§ÇÑ ½ºÀ§Ä¡
+	// ê¸°ëŠ¥ ì‚¬ìš©ì„ ìœ„í•œ ìŠ¤ìœ„ì¹˜
 	//
 	///////////////////////////////////////////
 
-	bool isFullscreen = false; // ÀüÃ¼È­¸é ¿©ºÎ¸¦ È®ÀÎ
-	bool isWindowCreate = true; // À©µµ¿ì (Àç)»ı¼º ¿©ºÎ¸¦ È®ÀÎ
-	bool isSceneSwitch = true; // Scene º¯°æ ¿©ºÎ¸¦ È®ÀÎ
+	bool isFullscreen = false; // ì „ì²´í™”ë©´ ì—¬ë¶€ë¥¼ í™•ì¸
+	bool isWindowCreate = true; // ìœˆë„ìš° (ì¬)ìƒì„± ì—¬ë¶€ë¥¼ í™•ì¸
+	bool isSceneSwitch = true; // Scene ë³€ê²½ ì—¬ë¶€ë¥¼ í™•ì¸
 
 
 	///////////////////////////////////////////
 	//
-	// °ÔÀÓ ³»¿¡¼­ »ç¿ëµÇ´Â ¿ÀºêÁ§Æ® º¯¼ö ¹× ÇÔ¼ö
+	// ê²Œì„ ë‚´ì—ì„œ ì‚¬ìš©ë˜ëŠ” ì˜¤ë¸Œì íŠ¸ ë³€ìˆ˜ ë° í•¨ìˆ˜
 	//
 	///////////////////////////////////////////
 
-	/* ±×·¡ÇÈ ¿ÀºêÁ§Æ® (Texture -> Sprite - > Font) */
+	/* ê·¸ë˜í”½ ì˜¤ë¸Œì íŠ¸ (Texture -> Sprite - > Font) */
 
 	sf::Texture texture1;
 	sf::Texture texture2;
@@ -82,9 +81,9 @@ int main()
 	sprite2.setTexture(texture2);
 
 	/* 
-	»ç¿îµå ¿ÀºêÁ§Æ® 
-	- ¹è°æÀ½ µî ÆÄÀÏ Å©±â°¡ Å« ¿ÀºêÁ§Æ®´Â ÇÊ¿äÇÑ Scene¿¡¼­ sf::MusicÀ¸·Î ·Îµù
-	- ÆÄÀÏ Å©±â°¡ ÀÛÀº ¿ÀºêÁ§Æ®´Â sf::SoundBuffer¿¡ ÀúÀå ÈÄ sf::Sound¿¡ ·Îµù	
+	ì‚¬ìš´ë“œ ì˜¤ë¸Œì íŠ¸ 
+	- ë°°ê²½ìŒ ë“± íŒŒì¼ í¬ê¸°ê°€ í° ì˜¤ë¸Œì íŠ¸ëŠ” í•„ìš”í•œ Sceneì—ì„œ sf::Musicìœ¼ë¡œ ë¡œë”©
+	- íŒŒì¼ í¬ê¸°ê°€ ì‘ì€ ì˜¤ë¸Œì íŠ¸ëŠ” sf::SoundBufferì— ì €ì¥ í›„ sf::Soundì— ë¡œë”©	
 	*/
 
 	sf::SoundBuffer soundeffectClick;
@@ -105,7 +104,7 @@ int main()
 	
 	///////////////////////////////////////////
 	//
-	// ¼¼ºÎ ±¸ÇöÀ» À§ÇÑ º¯¼ö ¹× ÇÔ¼ö
+	// ì„¸ë¶€ êµ¬í˜„ì„ ìœ„í•œ ë³€ìˆ˜ ë° í•¨ìˆ˜
 	// 
 	///////////////////////////////////////////
 
@@ -113,9 +112,9 @@ int main()
 
 	///////////////////////////////////////////
 	//
-	// ±â´É Å×½ºÆ®¸¦ À§ÇÑ º¯¼ö ¹× ÇÔ¼ö
+	// ê¸°ëŠ¥ í…ŒìŠ¤íŠ¸ë¥¼ ìœ„í•œ ë³€ìˆ˜ ë° í•¨ìˆ˜
 	//
-	// - ÇØ´ç º¯¼ö°¡ »ç¿ëµÈ ¸ğµç º¯¼ö¿Í ÇÔ¼ö´Â ±â´É Å×½ºÆ® ¸ñÀûÀ» À§ÇÔ
+	// - í•´ë‹¹ ë³€ìˆ˜ê°€ ì‚¬ìš©ëœ ëª¨ë“  ë³€ìˆ˜ì™€ í•¨ìˆ˜ëŠ” ê¸°ëŠ¥ í…ŒìŠ¤íŠ¸ ëª©ì ì„ ìœ„í•¨
 	// - 
 	// 
 	///////////////////////////////////////////
@@ -160,7 +159,7 @@ int main()
 	sf::Rect<float> testRect;
 	testRect = sf::FloatRect();
 
-	//À©µµ¿ì ·çÇÁ ½ÃÀÛ
+	//ìœˆë„ìš° ë£¨í”„ ì‹œì‘
 
 	while (window.isOpen())
 	{
@@ -176,9 +175,9 @@ int main()
 
 			case sf::Event::KeyPressed:
 
-				//À©µµ¿ì Àç»ı¼º ±â´É Å×½ºÆ®
-				//ÀüÃ¼È­¸é°ú À©µµ¿ìÈ­¸é °£ÀÇ ÀüÈ¯ ½Ã À©µµ¿ì ÀÚÃ¼¸¦ Àç»ı¼º
-				//isFullscreen°ú isWindowCreate¸¦ true·Î º¯°æ
+				//ìœˆë„ìš° ì¬ìƒì„± ê¸°ëŠ¥ í…ŒìŠ¤íŠ¸
+				//ì „ì²´í™”ë©´ê³¼ ìœˆë„ìš°í™”ë©´ ê°„ì˜ ì „í™˜ ì‹œ ìœˆë„ìš° ìì²´ë¥¼ ì¬ìƒì„±
+				//isFullscreenê³¼ isWindowCreateë¥¼ trueë¡œ ë³€ê²½
 
 				if (event.key.code == sf::Keyboard::S && !isFullscreen)
 				{
@@ -225,10 +224,10 @@ int main()
 			}			
 		}
 		
-		// À©µµ¿ì (Àç)»ı¼º ½Ã ½ÇÇàµÇ´Â ±â´É
-		// isWindowCreate ½ºÀ§Ä¡·Î ¿Â¿ÀÇÁ
-		// ½ÇÇà ½Ã À©µµ¿ì »çÀÌÁî¿¡ ¸Â°Ô sprite¿Í viewÀÇ Å©±â¸¦ ÀçÁ¶Á¤
-		// ¿Ï·á ÈÄ isWindowCreate´Â false·Î º¯°æµÊ
+		// ìœˆë„ìš° (ì¬)ìƒì„± ì‹œ ì‹¤í–‰ë˜ëŠ” ê¸°ëŠ¥
+		// isWindowCreate ìŠ¤ìœ„ì¹˜ë¡œ ì˜¨ì˜¤í”„
+		// ì‹¤í–‰ ì‹œ ìœˆë„ìš° ì‚¬ì´ì¦ˆì— ë§ê²Œ spriteì™€ viewì˜ í¬ê¸°ë¥¼ ì¬ì¡°ì •
+		// ì™„ë£Œ í›„ isWindowCreateëŠ” falseë¡œ ë³€ê²½ë¨
 
 		if (isWindowCreate)
 		{
@@ -245,8 +244,8 @@ int main()
 
 			/*testSpriteStart.setScale(sf::Vector2f(window.getSize().x / testSpriteStart.getGlobalBounds().width,
 				window.getSize().y / sprite1.getLocalBounds().height));*/
-				/*testSpriteOptions.setScale(sf::Vector2f(window.getSize().x / testSpriteOptions.getLocalBounds().width,
-					window.getSize().y / sprite1.getLocalBounds().height));*/
+			/*testSpriteOptions.setScale(sf::Vector2f(window.getSize().x / testSpriteOptions.getLocalBounds().width,
+				window.getSize().y / sprite1.getLocalBounds().height));*/
 
 			testMenuButtonPositionY = (window.getSize().y / 4 * 3) - (testSpriteStart.getLocalBounds().height / 2);
 			testMenuButtonBetweenDistance = testSpriteStart.getLocalBounds().width / 2;
@@ -275,7 +274,7 @@ int main()
 		
 		float deltatime = clock.restart().asSeconds();
 
-		//¿ÀºêÁ§Æ®°¡ À©µµ¿ì¿¡ ±×·ÁÁö´Â ±¸°£
+		//ì˜¤ë¸Œì íŠ¸ê°€ ìœˆë„ìš°ì— ê·¸ë ¤ì§€ëŠ” êµ¬ê°„
 
 		window.clear();
 		
