@@ -6,6 +6,8 @@
 #include <ctime>
 #include <vector>
 
+#include "TempCharacter.h"
+
 #define GRAPHIC_RESOURCE "resource/graphics/"
 #define MUSIC_RESOURCE "resource/music/"
 #define FONTS_RESOURCE "resource/fonts/"
@@ -14,9 +16,12 @@ int main()
 {
 	///////////////////////////////////////////
 	//
-	// 어플리케이션 윈도우 속성값
+	// 윈도우 초기화 및 생성
 	//
 	///////////////////////////////////////////
+
+	// 윈도우 속성값
+
 	std::srand(static_cast<unsigned int>(std::time(NULL)));	
 
 	std::vector<sf::VideoMode> videoMode = sf::VideoMode::getFullscreenModes();
@@ -41,18 +46,14 @@ int main()
 		!fontEastAsia.loadFromFile("c:/windows/fonts/gulim.ttc"))
 		return EXIT_FAILURE;
 
-	///////////////////////////////////////////
-	//
-	// 어플리케이션 윈도우 최초 생성
-	//
-	///////////////////////////////////////////
+	// 윈도우 최초 생성
 
 	sf::RenderWindow window;
 	window.create(sf::VideoMode(windowWidth, windowHeight), windowTitle, windowWindowScreen, windowContextAttr);
 
 	///////////////////////////////////////////
 	//
-	// 기능 사용을 위한 스위치
+	// 스위치
 	//
 	///////////////////////////////////////////
 
@@ -61,9 +62,12 @@ int main()
 	bool isSceneSwitch = true; // Scene 변경 여부를 확인
 	bool isLoading = true;
 
+	bool isTitleScene = true;
+	bool isTestStage = false;
+
 	///////////////////////////////////////////
 	//
-	// 오브젝트 상수
+	// 상수
 	//
 	///////////////////////////////////////////
 
@@ -73,27 +77,40 @@ int main()
 
 	///////////////////////////////////////////
 	//
-	// 오브젝트 변수
-	//
+	// Scene
+	// 
+	// 사운드 오브젝트 유의사항
+	//- 배경음 등 파일 크기가 큰 오브젝트는 필요한 Scene에서 sf::Music으로 로딩
+	// -파일 크기가 작은 오브젝트는 sf::SoundBuffer에 저장 후 sf::Sound에 로딩
+	// 
 	///////////////////////////////////////////
 
-	/* 그래픽 오브젝트 (Texture -> Sprite - > Font) */
+	// 글로벌
+
+	sf::SoundBuffer soundeffectClick;
+	sf::SoundBuffer soundeffectDecide;
+	sf::Music backgroundmusic;
+	sf::Sound soundeffect;
+
+	if (!soundeffectClick.loadFromFile(MUSIC_RESOURCE"click.wav") ||
+		!soundeffectDecide.loadFromFile(MUSIC_RESOURCE"confirm.wav"))
+		return EXIT_FAILURE;
+
+	backgroundmusic.setVolume(50.f);
+	soundeffect.setVolume(50.f);
+
+	// Title scene
 
 	sf::Texture textureTitleBG; //타이틀 화면 배경 텍스쳐
-	sf::Texture texture2;
 
-	if (!textureTitleBG.loadFromFile(GRAPHIC_RESOURCE"background_test.jpg") ||
-		!texture2.loadFromFile(GRAPHIC_RESOURCE"logo_1.jpg"))
+	if (!textureTitleBG.loadFromFile(GRAPHIC_RESOURCE"background_temp.jpg"))
 		return EXIT_FAILURE;
 
 	textureTitleBG.setSmooth(true);
-	texture2.setSmooth(true);
 
 	sf::Sprite spriteTitleBG; //타이틀 화면 배경 스프라이트
-	sf::Sprite sprite2;
 
 	spriteTitleBG.setTexture(textureTitleBG);
-	sprite2.setTexture(texture2);
 
 	sf::Text buttonTitleNewGame(L"New Game", fontEnglish, 50U);
 	sf::Text buttonTitleContinue(L"Continue", fontEnglish);
@@ -109,75 +126,51 @@ int main()
 	unsigned int titleButtonY = 0U;
 	const unsigned int titleButtonCharacterSize = 45U;
 
-	/*
-	사운드 오브젝트 
-	- 배경음 등 파일 크기가 큰 오브젝트는 필요한 Scene에서 sf::Music으로 로딩
-	- 파일 크기가 작은 오브젝트는 sf::SoundBuffer에 저장 후 sf::Sound에 로딩	
-	*/
+	//test stage scene	
+	sf::RectangleShape tempFloor1, tempFloor2, tempFloor3, tempFloor4;
+	sf::RectangleShape tempFloatingPlatform1, tempFloatingPlatform2;
 
-	sf::SoundBuffer soundeffectClick;
-	sf::SoundBuffer soundeffectDecide;
-	sf::Music backgroundmusic;
-	sf::Sound soundeffect;
+	///////////////////////////////////////////
+	// 
+	// 캐릭터
+	//  
+	///////////////////////////////////////////
 
-	if (!soundeffectClick.loadFromFile(MUSIC_RESOURCE"click.wav") ||
-		!soundeffectDecide.loadFromFile(MUSIC_RESOURCE"confirm.wav"))
-		return EXIT_FAILURE;
-
-	backgroundmusic.setVolume(50.f);
-	soundeffect.setVolume(50.f);
-
-	/*sf::Vector2u titleUISize(100u, 40u);
-	sf::Vector2u titleUIPosition(910u, 500u);
-	sf::Rect<unsigned int> rect(titleUIPosition, titleUISize);*/
+	TempCharacter* testCharacter = new TempCharacter();	
 	
 	///////////////////////////////////////////
 	//
-	// 세부 구현을 위한 변수 및 함수
+	// 기능 변수 및 함수
 	// 
 	///////////////////////////////////////////
 
 	sf::Clock clock;
 
 	///////////////////////////////////////////
-	//
+	// 
 	// 
 	// 기능 테스트 혹은 개발용 변수 및 함수
-	//
+	// 
 	// 
 	///////////////////////////////////////////
 
-	bool testScene1 = true;
-	bool testScene2 = false;
-
-	bool testTitleOptionSwitch = false;
-	bool testTitleStartSwitch = false;
-	bool testTitleHideSwitch = false;
-
-	int testCount = 0;
-	sf::Clock testClock;
-
-	sf::Text testTextOptions, testTextMenuButton;
-	testTextOptions.setFont(fontEnglish);
-	testTextOptions.setString(L"Insted of Options");
-	
-	sf::Sprite testSpriteforView;
-	testSpriteforView.setTexture(texture2);
-
 	sf::Text debugAlphaVersionInfo(L"This game is now currently development", fontEnglish);
 	debugAlphaVersionInfo.setFillColor(sf::Color(255U, 0U, 0U));
-
-	float testMenuButtonPositionY = 0.f;	
-
-	sf::Rect<float> testRect;
-	testRect = sf::FloatRect();
 
 	//윈도우 루프 시작
 
 	while (window.isOpen())
 	{
 		sf::Event event;
-		
+
+		///////////////////////////////////////////
+		//
+		// 
+		// SFML 이벤트
+		//
+		// 
+		///////////////////////////////////////////	
+
 		while (window.pollEvent(event))
 		{
 			switch (event.type)
@@ -212,10 +205,10 @@ int main()
 
 				if (event.key.code == sf::Keyboard::D)
 				{
-					if (!testScene1 && testScene2)
+					if (!isTitleScene && isTestStage)
 					{
-						testScene1 = true;
-						testScene2 = false;
+						isTitleScene = true;
+						isTestStage = false;
 						isSceneSwitch = true;
 					}
 				}
@@ -225,21 +218,25 @@ int main()
 					window.close();
 				}
 
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+					testCharacter->Jump();
+
 				break;
 			
 			// 마우스 클릭 시 이벤트
 			// Button 클래스와 같이 모듈화를 통해 코드 간략화 필요
 
 			case sf::Event::MouseButtonPressed:
-				if (testScene1)
+
+				if (isTitleScene)
 				{
 					if (event.mouseButton.x >= buttonTitleNewGame.getGlobalBounds().left &&
 						event.mouseButton.x <= buttonTitleNewGame.getGlobalBounds().left + buttonTitleNewGame.getGlobalBounds().width &&
 						event.mouseButton.y >= buttonTitleNewGame.getGlobalBounds().top &&
 						event.mouseButton.y <= buttonTitleNewGame.getGlobalBounds().top + buttonTitleNewGame.getGlobalBounds().height)
 					{						
-						testScene1 = false;
-						testScene2 = true;
+						isTitleScene = false;
+						isTestStage = true;
 						
 						isSceneSwitch = true;
 					}
@@ -269,31 +266,49 @@ int main()
 						event.mouseButton.x <= buttonTitleExit.getGlobalBounds().left + buttonTitleExit.getGlobalBounds().width &&
 						event.mouseButton.y >= buttonTitleExit.getGlobalBounds().top &&
 						event.mouseButton.y <= buttonTitleExit.getGlobalBounds().top + buttonTitleExit.getGlobalBounds().height)
-						window.close();
-					
+						window.close();					
 				}
 				break;
 			
 			default:
 				break;
+			}			
+		}
+
+		///////////////////////////////////////////
+		//
+		// 
+		// 키보드/마우스 이벤트 - deltatime
+		//
+		// 
+		///////////////////////////////////////////	
+
+		float deltatime = clock.restart().asSeconds();
+
+		if (isTestStage)
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
+				sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				testCharacter->Move(event.key.code, deltatime);
 			}
-				
-			
-			
 		}
 		
-		// 윈도우 (재)생성 시 실행되는 기능
+
+		///////////////////////////////////////////	
+		// 
+		// 윈도우 (재)생성 이벤트
 		// isWindowCreate 스위치로 온오프
 		// 실행 시 윈도우 사이즈에 맞게 sprite와 view의 크기를 재조정
 		// 완료 후 isWindowCreate는 false로 변경됨
+		// 
+		///////////////////////////////////////////	
 
 		if (isWindowCreate)
 		{
 			//Sprite 정보 변경
 
 			spriteTitleBG.setScale(sf::Vector2f(window.getSize().x / spriteTitleBG.getLocalBounds().width,
-				window.getSize().y / spriteTitleBG.getLocalBounds().height));
-			sprite2.setScale(sf::Vector2f(window.getSize().x / sprite2.getLocalBounds().width,
 				window.getSize().y / spriteTitleBG.getLocalBounds().height));
 						
 			//Text 정보 변경
@@ -327,18 +342,23 @@ int main()
 			sf::FloatRect visibleArea(0.f, 0.f, window.getSize().x, window.getSize().y);
 			window.setView(sf::View(visibleArea));
 
+			testCharacter->Rescale(window);
+
 			isWindowCreate = false;
 		}
 
-		//
-		
-		float deltatime = clock.restart().asSeconds();
 
-		//오브젝트가 윈도우에 그려지는 구간
+		///////////////////////////////////////////
+		//
+		// 
+		// 윈도우 그리기
+		//
+		// 
+		/////////////////////////////////////////////
 
 		window.clear();
 
-		if (testScene1)
+		if (isTitleScene)
 		{			
 			window.draw(spriteTitleBG);
 
@@ -354,14 +374,10 @@ int main()
 			window.draw(buttonTitleContinue);
 			window.draw(buttonTitleOptions);
 			window.draw(buttonTitleExit);
-
-			if (testTitleOptionSwitch)
-				window.draw(testTextOptions);
 		}
 
-		if (testScene2)
+		if (isTestStage)
 		{
-			window.draw(sprite2);
 
 			if (isSceneSwitch)
 			{
@@ -370,6 +386,8 @@ int main()
 				backgroundmusic.play();
 				isSceneSwitch = false;
 			}
+
+			testCharacter->Draw(window);
 		}
 
 		window.draw(debugAlphaVersionInfo);
