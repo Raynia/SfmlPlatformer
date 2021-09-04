@@ -6,7 +6,8 @@
 #include <ctime>
 #include <vector>
 
-#include "TempCharacter.h"
+#include "Character.h"
+#include "Button.h"
 
 #define GRAPHIC_RESOURCE "resource/graphics/"
 #define MUSIC_RESOURCE "resource/music/"
@@ -112,15 +113,10 @@ int main()
 
 	spriteTitleBG.setTexture(textureTitleBG);
 
-	sf::Text buttonTitleNewGame(L"New Game", fontEnglish, 50U);
-	sf::Text buttonTitleContinue(L"Continue", fontEnglish);
-	sf::Text buttonTitleOptions(L"Options", fontEnglish);
-	sf::Text buttonTitleExit(L"Exit", fontEnglish);
-
-	buttonTitleNewGame.setFillColor(BLACK);
-	buttonTitleContinue.setFillColor(BLACK);
-	buttonTitleOptions.setFillColor(BLACK);
-	buttonTitleExit.setFillColor(BLACK);
+	Button buttonTitleNewGame(L"New Game", fontEnglish, 50U, BLACK);
+	Button buttonTitleContinue(L"Continue", fontEnglish, 50U, BLACK);
+	Button buttonTitleOptions(L"Options", fontEnglish, 50U, BLACK);
+	Button buttonTitleExit(L"Exit", fontEnglish, 50U, BLACK);
 
 	float titleButtonDistance = 100.f;
 	unsigned int titleButtonY = 0U;
@@ -136,7 +132,7 @@ int main()
 	//  
 	///////////////////////////////////////////
 
-	TempCharacter* testCharacter = new TempCharacter();	
+	Character* testCharacter = new Character;	
 	
 	///////////////////////////////////////////
 	//
@@ -156,6 +152,7 @@ int main()
 
 	sf::Text debugAlphaVersionInfo(L"This game is now currently development", fontEnglish);
 	debugAlphaVersionInfo.setFillColor(sf::Color(255U, 0U, 0U));
+	
 
 	//윈도우 루프 시작
 
@@ -230,21 +227,15 @@ int main()
 
 				if (isTitleScene)
 				{
-					if (event.mouseButton.x >= buttonTitleNewGame.getGlobalBounds().left &&
-						event.mouseButton.x <= buttonTitleNewGame.getGlobalBounds().left + buttonTitleNewGame.getGlobalBounds().width &&
-						event.mouseButton.y >= buttonTitleNewGame.getGlobalBounds().top &&
-						event.mouseButton.y <= buttonTitleNewGame.getGlobalBounds().top + buttonTitleNewGame.getGlobalBounds().height)
-					{						
+					if (buttonTitleNewGame.mouseClick(event))
+					{
 						isTitleScene = false;
 						isTestStage = true;
-						
-						isSceneSwitch = true;
-					}
 
-					if (event.mouseButton.x >= buttonTitleContinue.getGlobalBounds().left &&
-						event.mouseButton.x <= buttonTitleContinue.getGlobalBounds().left + buttonTitleContinue.getGlobalBounds().width &&
-						event.mouseButton.y >= buttonTitleContinue.getGlobalBounds().top &&
-						event.mouseButton.y <= buttonTitleContinue.getGlobalBounds().top + buttonTitleContinue.getGlobalBounds().height)
+						isSceneSwitch = true;
+					}					
+
+					if (buttonTitleContinue.mouseClick(event))
 					{
 
 						std::cout << "Continue button pressed\n";
@@ -252,20 +243,14 @@ int main()
 						soundeffect.play();
 					}
 
-					if (event.mouseButton.x >= buttonTitleOptions.getGlobalBounds().left &&
-						event.mouseButton.x <= buttonTitleOptions.getGlobalBounds().left + buttonTitleOptions.getGlobalBounds().width &&
-						event.mouseButton.y >= buttonTitleOptions.getGlobalBounds().top &&
-						event.mouseButton.y <= buttonTitleOptions.getGlobalBounds().top + buttonTitleOptions.getGlobalBounds().height)
+					if (buttonTitleOptions.mouseClick(event))
 					{
 						std::cout << "Options button pressed\n";
 						soundeffect.setBuffer(soundeffectDecide);
 						soundeffect.play();
 					}
 
-					if (event.mouseButton.x >= buttonTitleExit.getGlobalBounds().left &&
-						event.mouseButton.x <= buttonTitleExit.getGlobalBounds().left + buttonTitleExit.getGlobalBounds().width &&
-						event.mouseButton.y >= buttonTitleExit.getGlobalBounds().top &&
-						event.mouseButton.y <= buttonTitleExit.getGlobalBounds().top + buttonTitleExit.getGlobalBounds().height)
+					if (buttonTitleExit.mouseClick(event))
 						window.close();					
 				}
 				break;
@@ -318,31 +303,34 @@ int main()
 
 			debugAlphaVersionInfo.setCharacterSize(static_cast<unsigned int>(30 * (window.getSize().x / 1920.f)));
 
-			buttonTitleNewGame.setCharacterSize(titleButtonCharacterSize * (window.getSize().x / 1920.f));
-			buttonTitleContinue.setCharacterSize(titleButtonCharacterSize * (window.getSize().x / 1920.f));
-			buttonTitleOptions.setCharacterSize(titleButtonCharacterSize * (window.getSize().x / 1920.f));
-			buttonTitleExit.setCharacterSize(titleButtonCharacterSize * (window.getSize().x / 1920.f));
+			buttonTitleNewGame.Update(window);
+			buttonTitleContinue.Update(window);
+			buttonTitleOptions.Update(window);
+			buttonTitleExit.Update(window);
 
 			
 			buttonTitleContinue.setPosition(
-				window.getSize().x / 2 - buttonTitleContinue.getGlobalBounds().width,
-				titleButtonY);
-			buttonTitleNewGame.setPosition(
-				buttonTitleContinue.getGlobalBounds().left - (titleButtonDistance + buttonTitleNewGame.getGlobalBounds().width),
-				titleButtonY);
-			buttonTitleOptions.setPosition(
-				buttonTitleContinue.getGlobalBounds().width + buttonTitleContinue.getGlobalBounds().left + titleButtonDistance,
-				titleButtonY);
-			buttonTitleExit.setPosition(
-				buttonTitleOptions.getGlobalBounds().width + buttonTitleOptions.getGlobalBounds().left + titleButtonDistance,
-				titleButtonY);
+				sf::Vector2f(window.getSize().x / 2 - buttonTitleContinue.width,
+				titleButtonY));
 
+			buttonTitleNewGame.setPosition(
+				sf::Vector2f(buttonTitleContinue.left - (titleButtonDistance + buttonTitleNewGame.width),
+				titleButtonY));
+
+			buttonTitleOptions.setPosition(
+				sf::Vector2f(buttonTitleContinue.right + titleButtonDistance,
+				titleButtonY));
+
+			buttonTitleExit.setPosition(
+				sf::Vector2f(buttonTitleOptions.right + titleButtonDistance,
+				titleButtonY));
+			
 			//View 사이즈 변경
 
 			sf::FloatRect visibleArea(0.f, 0.f, window.getSize().x, window.getSize().y);
 			window.setView(sf::View(visibleArea));
 
-			testCharacter->Rescale(window);
+			testCharacter->Update(window);
 
 			isWindowCreate = false;
 		}
@@ -370,10 +358,10 @@ int main()
 				isSceneSwitch = false;
 			}
 			
-			window.draw(buttonTitleNewGame);
-			window.draw(buttonTitleContinue);
-			window.draw(buttonTitleOptions);
-			window.draw(buttonTitleExit);
+			buttonTitleNewGame.Draw(window);
+			buttonTitleContinue.Draw(window);
+			buttonTitleOptions.Draw(window);
+			buttonTitleExit.Draw(window);
 		}
 
 		if (isTestStage)

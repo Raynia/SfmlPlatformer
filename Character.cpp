@@ -1,12 +1,16 @@
-#include "tempCharacter.h"
+﻿#include "Character.h"
 
-TempCharacter::TempCharacter()
+Character::Character()
 {
 	shape.setSize(sf::Vector2f(50.f, 120.f));
 	shape.setFillColor(sf::Color(255U, 0U, 0U));
 }
 
-void TempCharacter::Move(int keycode, float deltatime)
+Character::~Character()
+{
+}
+
+void Character::Move(int keycode, float deltatime)
 {
 	float speed = 100.f;
 	int direction = 1; //1 = positive, -1 = negative, 0 = wrong button
@@ -24,7 +28,7 @@ void TempCharacter::Move(int keycode, float deltatime)
 	this->shape.move(offset);
 }
 
-void TempCharacter::Jump()
+void Character::Jump()
 {
 	sf::Vector2f offset(shape.getPosition().x, shape.getPosition().y);
 
@@ -46,13 +50,13 @@ void TempCharacter::Jump()
 	this->shape.setPosition(offset);
 }
 
-void TempCharacter::Rescale(sf::RenderWindow& window)
+void Character::Update(sf::RenderWindow& window)
 {
 	sf::Vector2f standardSize(1920.f, 1080.f);
 	this->shape.setScale(window.getSize().x / standardSize.x, window.getSize().y / standardSize.y);
 }
 
-void TempCharacter::Draw(sf::RenderWindow& window)
+void Character::Draw(sf::RenderWindow& window)
 {
 	window.draw(this->shape);
 }
