@@ -307,7 +307,6 @@ int main()
 			buttonTitleContinue.Update(window);
 			buttonTitleOptions.Update(window);
 			buttonTitleExit.Update(window);
-
 			
 			buttonTitleContinue.setPosition(
 				sf::Vector2f(window.getSize().x / 2 - buttonTitleContinue.width,
@@ -358,10 +357,10 @@ int main()
 				isSceneSwitch = false;
 			}
 			
-			buttonTitleNewGame.Draw(window);
-			buttonTitleContinue.Draw(window);
-			buttonTitleOptions.Draw(window);
-			buttonTitleExit.Draw(window);
+			window.draw(buttonTitleNewGame);
+			window.draw(buttonTitleContinue);
+			window.draw(buttonTitleOptions);
+			window.draw(buttonTitleExit);
 		}
 
 		if (isTestStage)

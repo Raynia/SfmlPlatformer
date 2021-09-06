@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "UObject.h"
+#include <SFML/Graphics.hpp>
 
-class Character : public UObject
+class Character
 {
 private:
 	sf::Vector2f position;
@@ -15,7 +15,7 @@ public:
 
 	void Move(int keycode, float deltatime);
 	void Jump();
-	void Update(sf::RenderWindow &window) override;
-	void Draw(sf::RenderWindow &window) override;
+	void Update(sf::RenderWindow &window);
+	void Draw(sf::RenderWindow &window);
 };
 
