@@ -18,7 +18,7 @@ public:
 
 	~Button();
 
-	void setPosition(sf::Vector2f position);
+	void setPosition(sf::Vector2f position); 
 	void setPosition(float x, float y);
 
 	bool mouseClick(sf::Event event); //Button의 위치를 클릭하면 true

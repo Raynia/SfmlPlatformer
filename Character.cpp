@@ -10,11 +10,14 @@ Character::~Character()
 {
 }
 
+void Character::Idle()
+{
+}
+
 void Character::Move(int keycode, float deltatime)
 {
 	float speed = 100.f;
 	int direction = 1; //1 = positive, -1 = negative, 0 = wrong button
-	std::string coutString = "";
 
 	if (keycode == sf::Keyboard::Right)
 		direction = 1;
@@ -54,9 +57,4 @@ void Character::Update(sf::RenderWindow& window)
 {
 	sf::Vector2f standardSize(1920.f, 1080.f);
 	this->shape.setScale(window.getSize().x / standardSize.x, window.getSize().y / standardSize.y);
-}
-
-void Character::Draw(sf::RenderWindow& window)
-{
-	window.draw(this->shape);
 }

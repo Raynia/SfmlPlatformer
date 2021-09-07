@@ -132,7 +132,7 @@ int main()
 	//  
 	///////////////////////////////////////////
 
-	Character* testCharacter = new Character;	
+	//Character* testCharacter = new Character;	
 	
 	///////////////////////////////////////////
 	//
@@ -216,7 +216,7 @@ int main()
 				}
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-					testCharacter->Jump();
+					//testCharacter->Jump();
 
 				break;
 			
@@ -231,13 +231,11 @@ int main()
 					{
 						isTitleScene = false;
 						isTestStage = true;
-
 						isSceneSwitch = true;
 					}					
 
 					if (buttonTitleContinue.mouseClick(event))
 					{
-
 						std::cout << "Continue button pressed\n";
 						soundeffect.setBuffer(soundeffectDecide);
 						soundeffect.play();
@@ -275,7 +273,7 @@ int main()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
 				sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				testCharacter->Move(event.key.code, deltatime);
+				//testCharacter->Move(event.key.code, deltatime);
 			}
 		}
 		
@@ -329,7 +327,7 @@ int main()
 			sf::FloatRect visibleArea(0.f, 0.f, window.getSize().x, window.getSize().y);
 			window.setView(sf::View(visibleArea));
 
-			testCharacter->Update(window);
+			//testCharacter->Update(window);
 
 			isWindowCreate = false;
 		}
@@ -374,7 +372,7 @@ int main()
 				isSceneSwitch = false;
 			}
 
-			testCharacter->Draw(window);
+			//testCharacter->Draw(window);
 		}
 
 		window.draw(debugAlphaVersionInfo);
