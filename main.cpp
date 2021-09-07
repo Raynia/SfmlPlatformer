@@ -6,7 +6,7 @@
 #include <ctime>
 #include <vector>
 
-#include "Character.h"
+#include "tempCharacter.h"
 #include "Button.h"
 
 #define GRAPHIC_RESOURCE "resource/graphics/"
@@ -132,7 +132,7 @@ int main()
 	//  
 	///////////////////////////////////////////
 
-	//Character* testCharacter = new Character;	
+
 	
 	///////////////////////////////////////////
 	//
@@ -153,6 +153,7 @@ int main()
 	sf::Text debugAlphaVersionInfo(L"This game is now currently development", fontEnglish);
 	debugAlphaVersionInfo.setFillColor(sf::Color(255U, 0U, 0U));
 	
+	tempCharacter tempChara(sf::Vector2f(50.f, 140.f), RED);
 
 	//윈도우 루프 시작
 
@@ -224,7 +225,6 @@ int main()
 			// Button 클래스와 같이 모듈화를 통해 코드 간략화 필요
 
 			case sf::Event::MouseButtonPressed:
-
 				if (isTitleScene)
 				{
 					if (buttonTitleNewGame.mouseClick(event))
@@ -270,10 +270,14 @@ int main()
 
 		if (isTestStage)
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
-				sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				//testCharacter->Move(event.key.code, deltatime);
+				tempChara.Move(deltatime, tempCharacter::Direction::negative);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				tempChara.Move(deltatime, tempCharacter::Direction::positive);
 			}
 		}
 		
@@ -320,14 +324,15 @@ int main()
 
 			buttonTitleExit.setPosition(
 				sf::Vector2f(buttonTitleOptions.right + titleButtonDistance,
-				titleButtonY));
+				titleButtonY));			
 			
 			//View 사이즈 변경
 
 			sf::FloatRect visibleArea(0.f, 0.f, window.getSize().x, window.getSize().y);
 			window.setView(sf::View(visibleArea));
 
-			//testCharacter->Update(window);
+			tempChara.Update(window);
+			tempChara.setPosition(sf::Vector2f(0.f, 0.f));
 
 			isWindowCreate = false;
 		}
@@ -372,7 +377,7 @@ int main()
 				isSceneSwitch = false;
 			}
 
-			//testCharacter->Draw(window);
+			window.draw(tempChara);
 		}
 
 		window.draw(debugAlphaVersionInfo);

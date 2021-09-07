@@ -5,7 +5,7 @@ class Button : public sf::Text
 {	
 private:
 	bool isMouseOver; //mouseOver, mouseLeave시 연속 동작 방지를 위한 스위치
-	unsigned int nameSizeOrigin;
+	unsigned int originCharacterSize;
 
 	void Initalize();
 

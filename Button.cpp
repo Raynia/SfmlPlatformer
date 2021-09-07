@@ -14,7 +14,7 @@ void Button::Initalize()
 Button::Button()
 {
 	this->isMouseOver = false;
-	this->nameSizeOrigin = 0U;
+	this->originCharacterSize = 0U;
 	this->width = 0.f, this->height = 0.f;
 	this->left = 0.f, this->right = 0.f, this->top = 0.f, this->bottom = 0.f;
 }
@@ -26,7 +26,7 @@ Button::Button(sf::String string, sf::Font& font, unsigned int characterSize, sf
 	this->setString(string);
 	this->setFont(font);
 	this->setCharacterSize(characterSize);
-	this->nameSizeOrigin = characterSize;
+	this->originCharacterSize = characterSize;
 	this->setFillColor(color);
 
 	this->Initalize();
@@ -71,7 +71,7 @@ bool Button::mouseLeave(sf::Event event)
 
 void Button::Update(sf::RenderWindow& window)
 {	
-	this->setCharacterSize(static_cast<unsigned int>(nameSizeOrigin * (window.getSize().x / 1920.f)));
+	this->setCharacterSize(static_cast<unsigned int>(originCharacterSize * (window.getSize().x / 1920.f)));
 	this->Initalize();
 }
 

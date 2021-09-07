@@ -1,8 +1,19 @@
-#include "tempCharacter.h"
+﻿#include "tempCharacter.h"
 
-tempCharacter::tempCharacter()
+tempCharacter::tempCharacter() : life(100), stamina(100)
 {
+	this->setSize(sf::Vector2f(0.f, 0.f));
+}	
 
+tempCharacter::tempCharacter(const sf::Vector2f size) : life(100), stamina(100)
+{
+	this->setSize(size);
+}
+
+tempCharacter::tempCharacter(const sf::Vector2f size, const sf::Color color) : life(100), stamina(100)
+{
+	this->setSize(size);
+	this->setFillColor(color);
 }
 
 tempCharacter::~tempCharacter()
@@ -10,27 +21,19 @@ tempCharacter::~tempCharacter()
 
 }
 
-void tempCharacter::Move(int keycode, float deltatime)
+void tempCharacter::Move(const float deltatime, const int direction)
 {
-	float speed = 100.f;
-	int direction = 1; //1 = positive, -1 = negative, 0 = wrong button
+	sf::Vector2f offset(this->speed * deltatime * direction, 0.f);
 
-	if (keycode == sf::Keyboard::Right)
-		direction = 1;
-	else if (keycode == sf::Keyboard::Left)
-		direction = -1;
-	else
-		direction = 0;
-
-	sf::Vector2f offset(speed * deltatime * direction, 0.f);
+	this->RectangleShape::move(offset);
 }
 
 void tempCharacter::Jump()
 {
-
+	
 }
 
 void tempCharacter::Update(sf::RenderWindow& window)
 {
-	this->shape.setScale(window.getSize().x / 1920.f, window.getSize().y / 1080.f);
+	this->setScale(window.getSize().x / 1920.f, window.getSize().y / 1080.f);
 }
