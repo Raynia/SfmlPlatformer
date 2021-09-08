@@ -21,8 +21,8 @@ public:
 	tempCharacter(const sf::Vector2f size, const sf::Color color);
 	~tempCharacter();
 
-	void Move(const float deltatime, const int direction);
-	void Jump();
-	void Update(sf::RenderWindow& window);
+	void move(const float deltatime, const int direction);
+	void jump();
+	void updateScale(sf::RenderWindow& window);
 };
 

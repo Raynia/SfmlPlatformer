@@ -69,7 +69,7 @@ bool Button::mouseLeave(sf::Event event)
 	return true;
 }
 
-void Button::Update(sf::RenderWindow& window)
+void Button::updateScale(sf::RenderWindow& window)
 {	
 	this->setCharacterSize(static_cast<unsigned int>(originCharacterSize * (window.getSize().x / 1920.f)));
 	this->Initalize();

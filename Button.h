@@ -25,6 +25,6 @@ public:
 	bool mouseOver(sf::Event event); //Button에 마우스가 위치하면 true
 	bool mouseLeave(sf::Event event); //Button에서 마우스가 떠나면 true
 
-	void Update(sf::RenderWindow& window);
+	void updateScale(sf::RenderWindow& window);
 };
 

@@ -13,6 +13,9 @@
 #define MUSIC_RESOURCE "resource/music/"
 #define FONTS_RESOURCE "resource/fonts/"
 
+#define MAX_WINDOW_WIDTH 1920.f
+#define MAX_WINDOW_HEIGHT 1080.f
+
 int main()
 {
 	///////////////////////////////////////////
@@ -21,7 +24,7 @@ int main()
 	//
 	///////////////////////////////////////////
 
-	// 윈도우 속성값
+	// 윈도우 속성 변수 및 상수
 
 	std::srand(static_cast<unsigned int>(std::time(NULL)));	
 
@@ -75,6 +78,8 @@ int main()
 	const sf::Color BLACK(0U, 0U, 0U);
 	const sf::Color WHITE(255U, 255U, 255U);
 	const sf::Color RED(255U, 0U, 0U);
+	const sf::Color BLUE(0U, 0U, 255U);
+	const sf::Color GREEN(0U, 255U, 0U);
 
 	///////////////////////////////////////////
 	//
@@ -102,6 +107,8 @@ int main()
 
 	// Title scene
 
+	sf::FloatRect titleViewArea;
+
 	sf::Texture textureTitleBG; //타이틀 화면 배경 텍스쳐
 
 	if (!textureTitleBG.loadFromFile(GRAPHIC_RESOURCE"background_temp.jpg"))
@@ -123,8 +130,24 @@ int main()
 	const unsigned int titleButtonCharacterSize = 45U;
 
 	//test stage scene	
-	sf::RectangleShape tempFloor1, tempFloor2, tempFloor3, tempFloor4;
-	sf::RectangleShape tempFloatingPlatform1, tempFloatingPlatform2;
+
+	sf::FloatRect inGameViewArea;
+
+	float floorY = 100.f;
+	float floatingPlatformY = 50.f;
+
+	sf::RectangleShape testFloor1(sf::Vector2f(2000.f, floorY));
+	sf::RectangleShape testFloor2(sf::Vector2f(500.f, floorY));
+	sf::RectangleShape testFloor4(sf::Vector2f(1000.f, floorY));
+	testFloor1.setFillColor(WHITE);
+	testFloor2.setFillColor(GREEN);
+	testFloor4.setFillColor(GREEN);
+	sf::RectangleShape testFloor3(testFloor2);
+
+	sf::RectangleShape testFloatingPlatform1(sf::Vector2f(250.f, floatingPlatformY));
+	testFloatingPlatform1.setFillColor(BLUE);
+	sf::RectangleShape testFloatingPlatform2(testFloatingPlatform1);
+	sf::RectangleShape testFloatingPlatform3(testFloatingPlatform1);
 
 	///////////////////////////////////////////
 	// 
@@ -132,7 +155,7 @@ int main()
 	//  
 	///////////////////////////////////////////
 
-
+	tempCharacter tempChara(sf::Vector2f(50.f, 140.f), RED);
 	
 	///////////////////////////////////////////
 	//
@@ -144,29 +167,27 @@ int main()
 
 	///////////////////////////////////////////
 	// 
-	// 
 	// 기능 테스트 혹은 개발용 변수 및 함수
-	// 
 	// 
 	///////////////////////////////////////////
 
 	sf::Text debugAlphaVersionInfo(L"This game is now currently development", fontEnglish);
 	debugAlphaVersionInfo.setFillColor(sf::Color(255U, 0U, 0U));
-	
-	tempCharacter tempChara(sf::Vector2f(50.f, 140.f), RED);
 
-	//윈도우 루프 시작
+	///////////////////////////////////////////
+	// 
+	// 윈도우 루프 시작
+	// 
+	///////////////////////////////////////////
 
 	while (window.isOpen())
 	{
 		sf::Event event;
 
 		///////////////////////////////////////////
-		//
 		// 
 		// SFML 이벤트
 		//
-		// 
 		///////////////////////////////////////////	
 
 		while (window.pollEvent(event))
@@ -259,11 +280,9 @@ int main()
 		}
 
 		///////////////////////////////////////////
-		//
 		// 
-		// 키보드/마우스 이벤트 - deltatime
+		// 키보드 / 마우스 이벤트 - deltatime
 		//
-		// 
 		///////////////////////////////////////////	
 
 		float deltatime = clock.restart().asSeconds();
@@ -272,12 +291,12 @@ int main()
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				tempChara.Move(deltatime, tempCharacter::Direction::negative);
+				tempChara.move(deltatime, tempCharacter::Direction::negative);
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				tempChara.Move(deltatime, tempCharacter::Direction::positive);
+				tempChara.move(deltatime, tempCharacter::Direction::positive);
 			}
 		}
 		
@@ -293,63 +312,90 @@ int main()
 
 		if (isWindowCreate)
 		{
-			//Sprite 정보 변경
+			//오브젝트 정보 변경
 
 			spriteTitleBG.setScale(sf::Vector2f(window.getSize().x / spriteTitleBG.getLocalBounds().width,
 				window.getSize().y / spriteTitleBG.getLocalBounds().height));
-						
-			//Text 정보 변경
 
-			titleButtonDistance = 120.f * (window.getSize().x / 1920.f);
-			titleButtonY = static_cast<unsigned int> (window.getSize().y * (3.f / 4.f));
+			tempChara.updateScale(window);
+			tempChara.setPosition(sf::Vector2f(0.f, 0.f));
 
-			debugAlphaVersionInfo.setCharacterSize(static_cast<unsigned int>(30 * (window.getSize().x / 1920.f)));
+			testFloor1.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
+			testFloor2.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
+			testFloor3.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
+			testFloor4.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
 
-			buttonTitleNewGame.Update(window);
-			buttonTitleContinue.Update(window);
-			buttonTitleOptions.Update(window);
-			buttonTitleExit.Update(window);
-			
+			testFloor1.setPosition(
+				sf::Vector2f(0.f, window.getSize().y - testFloor1.getGlobalBounds().height));
+			testFloor2.setPosition(
+				sf::Vector2f(testFloor1.getGlobalBounds().left + testFloor1.getGlobalBounds().width + 200.f,
+					testFloor1.getPosition().y));
+			testFloor3.setPosition(
+				sf::Vector2f(testFloor2.getGlobalBounds().left + testFloor2.getGlobalBounds().width + 250.f,
+					testFloor2.getPosition().y));
+
+			testFloatingPlatform1.setPosition(
+				sf::Vector2f(testFloor3.getGlobalBounds().left + testFloor3.getGlobalBounds().width + 200.f,
+					testFloor3.getPosition().y - testFloatingPlatform1.getGlobalBounds().height));
+			testFloatingPlatform2.setPosition(
+				sf::Vector2f(testFloatingPlatform1.getGlobalBounds().left + testFloatingPlatform1.getGlobalBounds().width + 200.f,
+					testFloatingPlatform1.getPosition().y));
+			testFloatingPlatform3.setPosition(
+				sf::Vector2f(testFloatingPlatform2.getGlobalBounds().left + testFloatingPlatform2.getGlobalBounds().width + 200.f,
+					testFloatingPlatform2.getPosition().y));
+
+			testFloor4.setPosition(
+				sf::Vector2f(testFloatingPlatform3.getGlobalBounds().left + testFloatingPlatform3.getGlobalBounds().width + 250.f,
+					testFloor3.getPosition().y));
+
+			//UI 정보 변경
+
+			titleButtonDistance = 120.f * (window.getSize().x / MAX_WINDOW_WIDTH);
+			titleButtonY = static_cast<unsigned int>(window.getSize().y * (3.f / 4.f));
+
+			buttonTitleNewGame.updateScale(window);
+			buttonTitleContinue.updateScale(window);
+			buttonTitleOptions.updateScale(window);
+			buttonTitleExit.updateScale(window);
+
 			buttonTitleContinue.setPosition(
 				sf::Vector2f(window.getSize().x / 2 - buttonTitleContinue.width,
-				titleButtonY));
+					static_cast<float>(titleButtonY)));
 
 			buttonTitleNewGame.setPosition(
 				sf::Vector2f(buttonTitleContinue.left - (titleButtonDistance + buttonTitleNewGame.width),
-				titleButtonY));
+					static_cast<float>(titleButtonY)));
 
 			buttonTitleOptions.setPosition(
 				sf::Vector2f(buttonTitleContinue.right + titleButtonDistance,
-				titleButtonY));
+					static_cast<float>(titleButtonY)));
 
 			buttonTitleExit.setPosition(
 				sf::Vector2f(buttonTitleOptions.right + titleButtonDistance,
-				titleButtonY));			
+					static_cast<float>(titleButtonY)));
+
+			debugAlphaVersionInfo.setCharacterSize(static_cast<unsigned int>(30 * (window.getSize().x / MAX_WINDOW_WIDTH)));
+	
+
+			//View 정보 변경
+
+			titleViewArea = sf::FloatRect(0.f, 0.f, static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
+			inGameViewArea = sf::FloatRect(0.f, 0.f, static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
 			
-			//View 사이즈 변경
-
-			sf::FloatRect visibleArea(0.f, 0.f, window.getSize().x, window.getSize().y);
-			window.setView(sf::View(visibleArea));
-
-			tempChara.Update(window);
-			tempChara.setPosition(sf::Vector2f(0.f, 0.f));
-
 			isWindowCreate = false;
 		}
 
-
 		///////////////////////////////////////////
-		//
 		// 
-		// 윈도우 그리기
+		// 윈도우에 오브젝트 출력
 		//
-		// 
 		/////////////////////////////////////////////
 
 		window.clear();
 
 		if (isTitleScene)
 		{			
+
 			window.draw(spriteTitleBG);
 
 			if (isSceneSwitch)
@@ -357,6 +403,7 @@ int main()
 				backgroundmusic.stop();
 				backgroundmusic.openFromFile(MUSIC_RESOURCE"title.ogg");
 				backgroundmusic.play();
+				window.setView(sf::View(titleViewArea));
 				isSceneSwitch = false;
 			}
 			
@@ -378,6 +425,14 @@ int main()
 			}
 
 			window.draw(tempChara);
+			window.draw(testFloor1);
+			window.draw(testFloor2);
+			window.draw(testFloor3);
+			window.draw(testFloatingPlatform1);
+			window.draw(testFloatingPlatform2);
+			window.draw(testFloatingPlatform3);
+			window.draw(testFloor4);
+			window.setView(sf::View(inGameViewArea));
 		}
 
 		window.draw(debugAlphaVersionInfo);

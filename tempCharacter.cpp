@@ -21,19 +21,19 @@ tempCharacter::~tempCharacter()
 
 }
 
-void tempCharacter::Move(const float deltatime, const int direction)
+void tempCharacter::move(const float deltatime, const int direction)
 {
 	sf::Vector2f offset(this->speed * deltatime * direction, 0.f);
 
 	this->RectangleShape::move(offset);
 }
 
-void tempCharacter::Jump()
+void tempCharacter::jump()
 {
 	
 }
 
-void tempCharacter::Update(sf::RenderWindow& window)
+void tempCharacter::updateScale(sf::RenderWindow& window)
 {
 	this->setScale(window.getSize().x / 1920.f, window.getSize().y / 1080.f);
 }

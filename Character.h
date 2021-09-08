@@ -19,8 +19,8 @@ public:
 	~Character();
 
 	void Idle();
-	void Move(int keycode, float deltatime);
-	void Jump();
-	void Update(sf::RenderWindow &window);
+	void move(int keycode, float deltatime);
+	void jump();
+	void updateScale(sf::RenderWindow &window);
 };
 
