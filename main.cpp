@@ -16,6 +16,11 @@
 #define MAX_WINDOW_WIDTH 1920.f
 #define MAX_WINDOW_HEIGHT 1080.f
 
+float scale(float targetSize, float windowScaleRatio)
+{
+	return (targetSize / windowScaleRatio);
+}
+
 int main()
 {
 	///////////////////////////////////////////
@@ -313,6 +318,8 @@ int main()
 		if (isWindowCreate)
 		{
 			//오브젝트 정보 변경
+			float windowScaledX = window.getSize().x / MAX_WINDOW_WIDTH;
+			float windowScaledY = window.getSize().y / MAX_WINDOW_HEIGHT;
 
 			spriteTitleBG.setScale(sf::Vector2f(window.getSize().x / spriteTitleBG.getLocalBounds().width,
 				window.getSize().y / spriteTitleBG.getLocalBounds().height));
@@ -320,37 +327,37 @@ int main()
 			tempChara.updateScale(window);
 			tempChara.setPosition(sf::Vector2f(0.f, 0.f));
 
-			testFloor1.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
-			testFloor2.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
-			testFloor3.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
-			testFloor4.setScale(sf::Vector2f(window.getSize().x / MAX_WINDOW_WIDTH, window.getSize().y / MAX_WINDOW_HEIGHT));
+			testFloor1.setScale(sf::Vector2f(windowScaledX, windowScaledY));
+			testFloor2.setScale(sf::Vector2f(windowScaledX, windowScaledY));
+			testFloor3.setScale(sf::Vector2f(windowScaledX, windowScaledY));
+			testFloor4.setScale(sf::Vector2f(windowScaledX, windowScaledY));
 
 			testFloor1.setPosition(
 				sf::Vector2f(0.f, window.getSize().y - testFloor1.getGlobalBounds().height));
 			testFloor2.setPosition(
-				sf::Vector2f(testFloor1.getGlobalBounds().left + testFloor1.getGlobalBounds().width + 200.f,
+				sf::Vector2f(testFloor1.getGlobalBounds().left + testFloor1.getGlobalBounds().width + scale(200.f, windowScaledX),
 					testFloor1.getPosition().y));
 			testFloor3.setPosition(
-				sf::Vector2f(testFloor2.getGlobalBounds().left + testFloor2.getGlobalBounds().width + 250.f,
+				sf::Vector2f(testFloor2.getGlobalBounds().left + testFloor2.getGlobalBounds().width + scale(250.f, windowScaledX),
 					testFloor2.getPosition().y));
 
 			testFloatingPlatform1.setPosition(
-				sf::Vector2f(testFloor3.getGlobalBounds().left + testFloor3.getGlobalBounds().width + 200.f,
+				sf::Vector2f(testFloor3.getGlobalBounds().left + testFloor3.getGlobalBounds().width + scale(200.f, windowScaledX),
 					testFloor3.getPosition().y - testFloatingPlatform1.getGlobalBounds().height));
 			testFloatingPlatform2.setPosition(
-				sf::Vector2f(testFloatingPlatform1.getGlobalBounds().left + testFloatingPlatform1.getGlobalBounds().width + 200.f,
+				sf::Vector2f(testFloatingPlatform1.getGlobalBounds().left + testFloatingPlatform1.getGlobalBounds().width + scale(200.f, windowScaledX),
 					testFloatingPlatform1.getPosition().y));
 			testFloatingPlatform3.setPosition(
-				sf::Vector2f(testFloatingPlatform2.getGlobalBounds().left + testFloatingPlatform2.getGlobalBounds().width + 200.f,
+				sf::Vector2f(testFloatingPlatform2.getGlobalBounds().left + testFloatingPlatform2.getGlobalBounds().width + scale(200.f, windowScaledX),
 					testFloatingPlatform2.getPosition().y));
 
 			testFloor4.setPosition(
-				sf::Vector2f(testFloatingPlatform3.getGlobalBounds().left + testFloatingPlatform3.getGlobalBounds().width + 250.f,
+				sf::Vector2f(testFloatingPlatform3.getGlobalBounds().left + testFloatingPlatform3.getGlobalBounds().width + scale(250.f, windowScaledX),
 					testFloor3.getPosition().y));
 
 			//UI 정보 변경
 
-			titleButtonDistance = 120.f * (window.getSize().x / MAX_WINDOW_WIDTH);
+			titleButtonDistance = scale(250.f, windowScaledX);
 			titleButtonY = static_cast<unsigned int>(window.getSize().y * (3.f / 4.f));
 
 			buttonTitleNewGame.updateScale(window);
@@ -374,7 +381,7 @@ int main()
 				sf::Vector2f(buttonTitleOptions.right + titleButtonDistance,
 					static_cast<float>(titleButtonY)));
 
-			debugAlphaVersionInfo.setCharacterSize(static_cast<unsigned int>(30 * (window.getSize().x / MAX_WINDOW_WIDTH)));
+			debugAlphaVersionInfo.setCharacterSize(static_cast<unsigned int>(30 * windowScaledX));
 	
 
 			//View 정보 변경
