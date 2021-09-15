@@ -7,7 +7,7 @@ private:
 	int life; // 생명력
 	int stamina; // 스태미너
 
-	float speed = 150.f; //속력
+	float speed = 200.f; //속력
 
 public:
 	enum Direction
