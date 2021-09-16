@@ -7,9 +7,11 @@ private:
 	int life; // 생명력
 	int stamina; // 스태미너
 
-	float speed = 200.f; //속력
+	float movementSpeed = 200.f; //이동속도 상수
 
 public:
+	sf::Vector2f velocity;
+
 	enum Direction
 	{
 		positive = 1,
@@ -21,8 +23,9 @@ public:
 	tempCharacter(const sf::Vector2f size, const sf::Color color);
 	~tempCharacter();
 
-	void move(const float deltatime, const int direction);
-	void jump();
+	void move(const float deltatime, const int direction); // 좌우 이동
+	void jump(); // 점프
+	void tempJump(const float deltatime, const int direction); //상하 이동 (콜리전 테스트용)
 	void updateScale(sf::RenderWindow& window);
 };
 

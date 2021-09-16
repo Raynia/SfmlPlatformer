@@ -16,7 +16,7 @@ void Character::Idle()
 
 void Character::move(int keycode, float deltatime)
 {
-	float speed = 100.f;
+	float movementSpeed = 100.f;
 	int direction = 1; //1 = positive, -1 = negative, 0 = wrong button
 
 	if (keycode == sf::Keyboard::Right)
@@ -26,7 +26,7 @@ void Character::move(int keycode, float deltatime)
 	else
 		direction = 0;
 	 
-	sf::Vector2f offset(speed * deltatime * direction , 0.f);
+	sf::Vector2f offset(movementSpeed * deltatime * direction , 0.f);
 
 	this->shape.move(offset);
 }

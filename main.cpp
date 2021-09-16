@@ -150,6 +150,19 @@ int main()
 	sf::RectangleShape testFloatingPlatform2(testFloatingPlatform1);
 	sf::RectangleShape testFloatingPlatform3(testFloatingPlatform1);
 
+	std::vector<sf::RectangleShape*> floorsTestStage;
+	floorsTestStage.push_back(&testFloor1);
+	floorsTestStage.push_back(&testFloor2);
+	floorsTestStage.push_back(&testFloor3);
+	floorsTestStage.push_back(&testFloor4);
+
+	std::vector<sf::RectangleShape*> floatingPlatformsTestStage;
+	floatingPlatformsTestStage.push_back(&testFloatingPlatform1);
+	floatingPlatformsTestStage.push_back(&testFloatingPlatform2);
+	floatingPlatformsTestStage.push_back(&testFloatingPlatform3);
+
+	//std::vector<std::vector<sf::RectangleShape*>> collisionTestStagePlatforms;
+
 	///////////////////////////////////////////
 	// 
 	// 캐릭터
@@ -163,7 +176,7 @@ int main()
 	// 기능 변수 및 함수
 	// 
 	///////////////////////////////////////////
-
+	
 	sf::Clock clock;
 
 	///////////////////////////////////////////
@@ -174,6 +187,8 @@ int main()
 
 	sf::Text debugAlphaVersionInfo(L"This game is now currently development", fontEnglish);
 	debugAlphaVersionInfo.setFillColor(sf::Color(255U, 0U, 0U));
+
+	sf::FloatRect nextPos;
 
 	///////////////////////////////////////////
 	// 
@@ -239,7 +254,14 @@ int main()
 				}
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-					//testCharacter->Jump();
+				{
+					tempChara.jump();
+				}
+
+				if (event.key.code == sf::Keyboard::P)
+				{
+					std::cout << "-------------------\n";
+				}
 
 				break;
 			
@@ -300,6 +322,16 @@ int main()
 			{
 				tempChara.move(deltatime, tempCharacter::Direction::positive);
 			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				tempChara.tempJump(deltatime, tempCharacter::Direction::negative);
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{ 
+				tempChara.tempJump(deltatime, tempCharacter::Direction::positive);
+			}
+
 		}
 		
 		///////////////////////////////////////////	
@@ -396,9 +428,62 @@ int main()
 
 		///////////////////////////////////////////
 		// 
+		// 콜리전 처리 (스테이지 전용)
+		// 
+		// 스크린 -> 플로어 -> 오브젝트 순서로 적용
+		// 
+		// 오브젝트 콜리전 처리는 해당 오브젝트의 콜리전 규칙에 따라 처리
+		// 
+		// 플로어는 다음 순서로 처리
+		// 1. 상단 충돌 -> 캐릭터가 플로어 위에 있음
+		// 2. 하단 충돌 -> 캐릭터가 점프 중 플로어와 접촉
+		// 3. 측면 충돌 -> 캐릭터가 플로어에서 이탈하여 낙하 중
+		// 4. 충돌하지 않음 -> 캐릭터가 플로어에서 이탈
+		//
+		///////////////////////////////////////////
+
+		if (isTestStage)
+		{
+			for (auto floor : floorsTestStage)
+			{
+				sf::FloatRect playerBounds = tempChara.getGlobalBounds();
+				sf::FloatRect floorBounds = floor->getGlobalBounds();
+
+				nextPos = playerBounds;
+				nextPos.left += tempChara.velocity.x;
+				nextPos.top += tempChara.velocity.y;
+				
+				if (floorBounds.intersects(nextPos))
+				{
+					if (floorBounds.top <= nextPos.top + nextPos.height)
+					{
+						tempChara.setPosition(playerBounds.left, floorBounds.top - playerBounds.height);
+					}
+
+				}
+			}
+
+			for (auto platform : floatingPlatformsTestStage)
+			{
+				sf::FloatRect playerBounds = tempChara.getGlobalBounds();
+				sf::FloatRect platFormBounds = platform->getGlobalBounds();
+
+				nextPos = playerBounds;
+				nextPos.left += tempChara.velocity.x;
+				nextPos.top += tempChara.velocity.y;
+
+				if (platFormBounds.intersects(nextPos))
+				{
+
+				}
+			}
+		}		
+
+		///////////////////////////////////////////
+		// 
 		// 윈도우에 오브젝트 출력
 		//
-		/////////////////////////////////////////////
+		///////////////////////////////////////////
 
 		window.clear();
 
@@ -447,8 +532,7 @@ int main()
 
 			if (tempChara.getPosition().x >= inGameView.getSize().x / 2.f)
 			{
-				inGameView.setCenter(tempChara.getPosition().x,
-					inGameView.getSize().y / 2.f); //플레이어가 조작하는 캐릭터의 위치를 실시간으로 적용
+				inGameView.setCenter(tempChara.getPosition().x, inGameView.getSize().y / 2.f); //플레이어가 조작하는 캐릭터의 위치를 실시간으로 적용
 			}
 			else
 			{
