@@ -5,4 +5,4 @@
 # 개발환경
 - Visual Studio 2019 
 - SFML 2.5.1, CMAKE로 컴파일 되었음 (https://www.sfml-dev.org/download/sfml/2.5.1/)
-- Box2D (물리엔진, 적용 예정)
+- Box2D
